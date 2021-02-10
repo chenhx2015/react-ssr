@@ -1,0 +1,30 @@
+{
+  "name": "react-ssr",
+  "version": "1.0.0",
+  "license": "MIT",
+  "author": "chenhuaxiang",
+  "scripts": {
+    "dev:client": "webpack --config webpack.client.config.js --watch",
+    "dev:server": "webpack --config webpack.server.config.js --watch",
+    "dev:start": "nodemon dist/server/bundle.js",
+    "start": "concurrently \"npm run dev:client\" \"npm run dev:server\" \"npm run dev:start\""
+  },
+  "dependencies": {
+    "concurrently": "^5.3.0",
+    "history": "^5.0.0",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-router-dom": "^5.2.0",
+    "webpack-merge": "^5.7.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.13",
+    "@babel/preset-env": "^7.12.13",
+    "@babel/preset-react": "^7.12.13",
+    "babel-loader": "^8.2.2",
+    "nodemon": "^2.0.7",
+    "webpack": "^5.20.2",
+    "webpack-cli": "^4.5.0",
+    "webpack-node-externals": "^2.5.2"
+  }
+}
