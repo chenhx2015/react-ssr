@@ -3,6 +3,7 @@ import Login from '../client/pages/Login';
 import User from '../client/pages/User';
 import NotFound from '../client/pages/NotFound';
 
+// 请注意一下这种到处方式才能找到
 export default [
   {
     type: 'redirect',
@@ -14,7 +15,9 @@ export default [
     type: 'route',
     path: '/user',
     exact: true,
-    component: User
+    component: User,
+    // 数据的获取以及注入
+    loadData: User.loadData // 服务端获取数据的函数
   },
   {
     type: 'route',
