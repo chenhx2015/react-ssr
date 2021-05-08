@@ -3,14 +3,16 @@ import Login from '../client/pages/Login';
 import User from '../client/pages/User';
 import NotFound from '../client/pages/NotFound';
 
-// 请注意一下这种到处方式才能找到
+console.log('User', User);
+
+// 请注意一下这种导出方式才能找到
 export default [
-  {
-    type: 'redirect',
-    exact: true,
-    from: '/',
-    to: '/user'
-  },
+  // {
+  //   type: 'redirect',
+  //   exact: true,
+  //   from: '/',
+  //   to: '/user'
+  // },
   {
     type: 'route',
     path: '/user',

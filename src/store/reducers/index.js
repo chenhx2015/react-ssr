@@ -1,7 +1,7 @@
 import { CHANGE_USERS } from '../actionTypes';
 
 const initialState = {
-  user: []
+  users: []
 }
 
 export default (state = initialState, action) => {

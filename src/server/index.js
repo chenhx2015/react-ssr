@@ -39,8 +39,9 @@ app.get('*', (req, res) => {
   const context = {};
   const store = getStore();
   const promises = [];
-  
+
   routeConfs.forEach((route)=> {
+    console.log('route', route);
     const match = matchPath(req.path, route);
     if(match&&route.loadData){
       promises.push(route.loadData(store));
@@ -50,22 +51,36 @@ app.get('*', (req, res) => {
 
   // 改造为如下 - 加上 promise 来改造路由，传 loadData
   Promise.all(promises).then(() => {
-    
-  })
-  const content = renderToString(
-    // <StaticRouter>
-    //   {App}
-    // </StaticRouter>
-    // 请注意：这里需要 div 元素包裹一层 => 改造为 Provider 包起来
-    <Provider store={store}>
-      <div>
-        {createRouter('server')({
-            location: req.url,
-            context // req.url来自node服务
-          })}
-      </div>
-    </Provider>
-  );
+    const content = renderToString(
+      // <StaticRouter>
+      //   {App}
+      // </StaticRouter>
+      // 请注意：这里需要 div 元素包裹一层 => 改造为 Provider 包起来
+      <Provider store={store}>
+        <div>
+          {createRouter('server')({
+              location: req.url,
+              context // req.url来自node服务
+            })}
+        </div>
+      </Provider>
+    );
+  
+
+  // const content = renderToString(
+  //   // <StaticRouter>
+  //   //   {App}
+  //   // </StaticRouter>
+  //   // 请注意：这里需要 div 元素包裹一层 => 改造为 Provider 包起来
+  //   <Provider store={store}>
+  //     <div>
+  //       {createRouter('server')({
+  //           location: req.url,
+  //           context // req.url来自node服务
+  //         })}
+  //     </div>
+  //   </Provider>
+  // );
 
   // before
   // res.send(
@@ -88,33 +103,34 @@ app.get('*', (req, res) => {
   // 以下是重定向的重点 *** 解决了 / 重定向的问题
   // 问题描述：路由先定位到 /login,会展示登录的路由，然后改为 /，路由会重定向到 user,但是展示出来的内容是 404.
   // 当 Redirect 被使用时，context.url 将包含重定向的地址
-  if (context.url) {
-    // 为什么这么判断，因为这是react-router官方文档提供的判断是否有重定向的方式
-    // 文档地址 ： https://reactrouter.com/web/api/StaticRouter
-    // 302
-    res.redirect(context.url);
-  } else {
-    // 200
-    if(context.NOT_FOUND) res.status(404) // 判断是否设置状态码为 404
-    res.send(
-      `
-        <!doctype html>
-        <html>
-        <head>
-            <meta charset='utf-8'/>
-            <title> react ssr </title>
-            <script>
-              window.INITIAL_STATE = ${JSON.stringify(store.getState())}
-            </script>
-        </head>
-        <body>
-            <div id="root">${content}</div>
-            <script src="/client/bundle.js"></script>
-        </body>
-        </html>
-      `
-    )
-  }
+    if (context.url) {
+      // 为什么这么判断，因为这是react-router官方文档提供的判断是否有重定向的方式
+      // 文档地址 ： https://reactrouter.com/web/api/StaticRouter
+      // 302
+      res.redirect(context.url);
+    } else {
+      // 200
+      if(context.NOT_FOUND) res.status(404) // 判断是否设置状态码为 404
+      res.send(
+        `
+          <!doctype html>
+          <html>
+          <head>
+              <meta charset='utf-8'/>
+              <title> react ssr </title>
+              <script>
+                window.INITIAL_STATE = ${JSON.stringify(store.getState())}
+              </script>
+          </head>
+          <body>
+              <div id="root">${content}</div>
+              <script src="/client/bundle.js"></script>
+          </body>
+          </html>
+        `
+      )
+    }
+  })
 })
 
 // 总结一下：路由改造的点有如下
